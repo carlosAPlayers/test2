@@ -4,3 +4,41 @@ on:
   push:
     branches:
       - main
+      - develop
+  pull_request:
+    branches:
+      - main
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: echo "Building application..."
+      - name: Run Tests
+        run: echo "Running tests..."
+ 
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.exemplo.com
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Staging
+        run: echo "Deploying to staging environment..."
+ 
+  deploy-production:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://app.exemplo.com
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to Production
+        run: echo "Deploying to production environment..."
